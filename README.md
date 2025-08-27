@@ -145,3 +145,5 @@ This repo includes ready-to-use Postman collections.
 - Test **Providers, Pets, Bookings, Notifications** end-to-end.
 
 ### Files
+- **Postman Collection** → `/postman/furryhub.postman_collection.json`
+- **Environment Variables** → `/postman/furryhub.postman_environment.json`
