@@ -10,8 +10,6 @@ spring:
     gateway:
       server:
         webflux:
-          default-filters:
-            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
           routes:
             - id: auth-service
               uri: lb://auth-service
@@ -21,9 +19,27 @@ spring:
               uri: lb://pet-service
               predicates:
                 - Path=/pets/**
-              filters:
-                - RemoveRequestHeader=Cookie
-                - PreserveHostHeader
+            - id: catalog-service
+              uri: lb://catalog-service
+              predicates:
+                - Path=/service-types/**,/providers/**
+            - id: booking-service
+              uri: lb://booking-service
+              predicates:
+                - Path=/bookings/**
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/notifications/**
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    com.furryhub.gateway: DEBUG
+
+# Optional: easiest on/off switch for Spring Security debug
+spring.security.debug: true
 eureka:
   client:
     service-url:

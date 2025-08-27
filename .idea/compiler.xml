@@ -10,23 +10,17 @@
         <module name="API-GateWay" />
         <module name="Discovery-Service" />
       </profile>
-      <profile name="Annotation profile for pet-service" enabled="true">
+      <profile name="Annotation profile for notification-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="pet-service" />
         <module name="auth-service" />
-      </profile>
-      <profile name="Annotation profile for catalog-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
+        <module name="pet-service" />
+        <module name="notification-service" />
+        <module name="booking-service" />
         <module name="catalog-service" />
       </profile>
     </annotationProcessing>
@@ -36,7 +30,9 @@
       <module name="API-GateWay" options="-parameters" />
       <module name="Discovery-Service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="booking-service" options="-parameters" />
       <module name="catalog-service" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="pet-service" options="-parameters" />
     </option>
   </component>

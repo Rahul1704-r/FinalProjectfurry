@@ -18,7 +18,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
                                                             JwtReactiveAuthenticationManager jwtAuthManager) {
-        // Our JWT auth filter
+
         AuthenticationWebFilter jwtFilter = new AuthenticationWebFilter(jwtAuthManager);
         jwtFilter.setServerAuthenticationConverter(new JwtServerAuthenticationConverter());
 
@@ -26,10 +26,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                // set our auth manager so the default filter (if any) also uses it
+
                 .authenticationManager(jwtAuthManager)
                 .authorizeExchange(ex -> ex
-                        .pathMatchers("/auth/**", "/actuator/**").permitAll()
+                        .pathMatchers("/auth/**", "/actuator/**", "/service-types/**", "/providers/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)

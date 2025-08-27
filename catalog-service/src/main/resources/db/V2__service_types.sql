@@ -1,0 +1,4 @@
+CREATE TABLE service_type (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) UNIQUE NOT NULL
+);

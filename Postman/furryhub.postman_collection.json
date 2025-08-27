@@ -1,0 +1,328 @@
+{
+  "info": {
+    "name": "FurryHub - Full Stack",
+    "_postman_id": "d9a3de2d-2e2a-4a90-9e2c-ff-furryhub",
+    "description": "Postman collection for FurryHub microservices via API Gateway.\nBase URL defaults to http://localhost:8080.\nLogin will automatically set the {{token}} variable for Bearer auth.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": [ "{{baseUrl}}" ], "path": [ "auth", "register" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@example.com\",\n  \"password\": \"pass123\",\n  \"fullName\": \"User One\",\n  \"phone\": \"+91-9999999999\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (sets {{token}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login OK\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch(e) {}",
+                  "if (json && json.accessToken) {",
+                  "  pm.collectionVariables.set(\"token\", json.accessToken);",
+                  "  console.log(\"Saved token to collection variable\");",
+                  "} else {",
+                  "  console.warn(\"No accessToken in response\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "auth", "login" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@example.com\",\n  \"password\": \"pass123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalog - Service Types",
+      "item": [
+        {
+          "name": "Create Service Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/service-types", "host": [ "{{baseUrl}}" ], "path": [ "service-types" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vet Consultation\",\n  \"description\": \"General health check and consultation\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Service Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": { "raw": "{{baseUrl}}/service-types", "host": [ "{{baseUrl}}" ], "path": [ "service-types" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalog - Providers",
+      "item": [
+        {
+          "name": "Create Provider",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/providers", "host": [ "{{baseUrl}}" ], "path": [ "providers" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Happy Paws Vet\",\n  \"phone\": \"+91-8888888888\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090,\n  \"serviceTypeIds\": [1]\n}"
+            }
+          }
+        },
+        {
+          "name": "List Providers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": { "raw": "{{baseUrl}}/providers", "host": [ "{{baseUrl}}" ], "path": [ "providers" ] }
+          }
+        },
+        {
+          "name": "Search Providers by Name",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/providers/search?q=happy",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "providers", "search" ],
+              "query": [ { "key": "q", "value": "happy" } ]
+            }
+          }
+        },
+        {
+          "name": "Nearby Providers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/providers/nearby?lat=28.6139&lon=77.2090&radiusMeters=5000&serviceTypeId=1",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "providers", "nearby" ],
+              "query": [
+                { "key": "lat", "value": "28.6139" },
+                { "key": "lon", "value": "77.2090" },
+                { "key": "radiusMeters", "value": "5000" },
+                { "key": "serviceTypeId", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Provider by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": { "raw": "{{baseUrl}}/providers/1", "host": [ "{{baseUrl}}" ], "path": [ "providers", "1" ] }
+          }
+        },
+        {
+          "name": "Update Provider",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/providers/1", "host": [ "{{baseUrl}}" ], "path": [ "providers", "1" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Happy Paws Vet (Updated)\",\n  \"phone\": \"+91-7777777777\",\n  \"latitude\": 28.6145,\n  \"longitude\": 77.2050,\n  \"serviceTypeIds\": [1]\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Provider",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": { "raw": "{{baseUrl}}/providers/1", "host": [ "{{baseUrl}}" ], "path": [ "providers", "1" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pet",
+      "item": [
+        {
+          "name": "Create Pet",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/pets", "host": [ "{{baseUrl}}" ], "path": [ "pets" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bruno\",\n  \"type\": \"DOG\",\n  \"breed\": \"Labrador\",\n  \"age\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "List My Pets",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+            ],
+            "url": { "raw": "{{baseUrl}}/pets", "host": [ "{{baseUrl}}" ], "path": [ "pets" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings", "host": [ "{{baseUrl}}" ], "path": [ "bookings" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"petId\": 1,\n  \"providerId\": 1,\n  \"serviceTypeId\": 1,\n  \"startTime\": \"2025-08-28T10:00:00\",\n  \"endTime\": \"2025-08-28T11:00:00\",\n  \"notes\": \"Annual checkup\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Accept Booking (Provider)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings/1/accept", "host": [ "{{baseUrl}}" ], "path": [ "bookings", "1", "accept" ] }
+          }
+        },
+        {
+          "name": "Complete Booking (Provider)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings/1/complete", "host": [ "{{baseUrl}}" ], "path": [ "bookings", "1", "complete" ] }
+          }
+        },
+        {
+          "name": "Cancel Booking (User/Provider)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings/1/cancel", "host": [ "{{baseUrl}}" ], "path": [ "bookings", "1", "cancel" ] }
+          }
+        },
+        {
+          "name": "My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings/my", "host": [ "{{baseUrl}}" ], "path": [ "bookings", "my" ] }
+          }
+        },
+        {
+          "name": "Get Booking by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/bookings/1", "host": [ "{{baseUrl}}" ], "path": [ "bookings", "1" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/notifications", "host": [ "{{baseUrl}}" ], "path": [ "notifications" ] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/notifications/1/read", "host": [ "{{baseUrl}}" ], "path": [ "notifications", "1", "read" ] }
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ]
+}
